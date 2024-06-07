@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: diffaction-speech-service-deployment
+  labels:
+    app: diffaction-speech-service
+    name: diffaction-speech-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: diffaction-speech-service
+  template:
+    metadata:
+      labels:
+        app: diffaction-speech-service
+    spec:
+      containers:
+        - name: diffaction-speech-service
+          image: artemowkin/diffaction-speech-service:latest
+          env:
+            - name: BUCKET_NAME
+              value: diffaction
+            - name: RABBIT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-credentials
+                  key: url
+            - name: CHATS_EXCHANGE
+              value: stage_chats_exchange
+            - name: S3_ENDPOINT_URL
+              value: https://storage.yandexcloud.net
+            - name: RECOGNITION_EXCHANGE
+              value: stage_recognition_exchange
+            - name: MESSAGES_RECOGNITION_QUEUE_NAME
+              value: stage_messages_recognition_queue
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: files-service-credentials
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: files-service-credentials
+                  key: aws_secret_access_key
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: speech-service-credentials
+                  key: sentry_dsn
+            - name: ENVIRONMENT
+              value: stage

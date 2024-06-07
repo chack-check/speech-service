@@ -1,0 +1,19 @@
+name: CI/CD Stage
+
+on:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  staging:
+    uses: chack-check/diffaction-workflows/.github/workflows/staging.yml@main
+    with:
+      service-name: diffaction-speech-service
+      app-manifests: |
+        kubernetes/stage/app/deployment.yml
+      skiptests: true
+    secrets:
+      KUBERNETES_SECRET: ${{ secrets.KUBERNETES_SECRET }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      CLIENT_SERVICE_PAT: ${{ secrets.CLIENT_SERVICE_PAT }}
