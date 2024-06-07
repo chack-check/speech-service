@@ -10,3 +10,4 @@ jobs:
     with:
       service-name: diffaction-speech-service
       skiptests: true
+      run-tests-command: skip
